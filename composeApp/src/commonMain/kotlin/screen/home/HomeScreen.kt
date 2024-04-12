@@ -16,6 +16,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -27,12 +28,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
+import local.DataSource
+import screen.Dialog.ShowInputDialog
 
 class HomeScreen : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel { HomeViewModel() }
+        //val viewModel = rememberScreenModel { HomeViewModel(DataSource()) }
+        // With koin-di
+        val viewModel = getScreenModel<HomeViewModel>()
 
         HomeScreenBody(viewModel)
     }
@@ -40,6 +46,17 @@ class HomeScreen : Screen {
 
 @Composable
 fun HomeScreenBody(viewModel: HomeViewModel) {
+
+    val showInputDialog = mutableStateOf(false)
+    val fieldInputValue = remember {
+        mutableStateOf("")
+    }
+
+    ShowInputDialog(title = "Input Dialog",message = "Message",fieldInputValue,showInputDialog){
+        viewModel.addRandomToList(fieldInputValue.value)
+        fieldInputValue.value = ""
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -62,7 +79,7 @@ fun HomeScreenBody(viewModel: HomeViewModel) {
             FloatingActionButton(
                 backgroundColor = Color.Black,
                 onClick = {
-                    viewModel.addRandomToList()
+                    showInputDialog.value = true
                 }) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -112,5 +129,3 @@ fun SingleItem(title: String) {
         }
     }
 }
-
-val fakeList = listOf("M1", "M2", "M3")

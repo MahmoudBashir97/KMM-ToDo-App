@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
+import di.initKoin
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -21,6 +22,7 @@ import screen.home.HomeScreen
 @Composable
 @Preview
 fun App() {
+    initKoin()
     MaterialTheme {
         Navigator(HomeScreen())
     }
